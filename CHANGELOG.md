@@ -21,6 +21,11 @@ MOVE THIS SECTION TO THE CORRECT LOCATION
   - AWSCloudWatchLogs
   - AWSConnect
 
+### Bug Fixes
+
+- **AWSCore**
+    - Add sync control to avoid crash during concurrent credential related requests
+
 ## 2.29.1
 
 ### Bug Fixes
