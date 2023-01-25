@@ -492,14 +492,16 @@ static NSInteger const SCALED_DOWN_LOGO_IMAGE_HEIGHT = 140;
 -(void)createInternalCompletionHandler {
     __weak AWSSignInViewController *weakSelf = self;
     self.completionHandler = ^(id<AWSSignInProvider>  _Nonnull signInProvider, NSError * _Nullable error) {
+        __strong typeof(weakSelf) strongSelf = weakSelf;
         if (error) {
-            weakSelf.completionHandlerCustom(nil, nil, error);
+            strongSelf.completionHandlerCustom(nil, nil, error);
         } else{
             [[signInProvider token] continueWithBlock:^id _Nullable(AWSTask<NSString *> * _Nonnull task) {
+                __strong typeof(weakSelf) strongSelf = weakSelf;
                 if (task.result) {
-                    weakSelf.completionHandlerCustom(signInProvider.identityProviderName, task.result, nil);
+                    strongSelf.completionHandlerCustom(signInProvider.identityProviderName, task.result, nil);
                 } else {
-                    weakSelf.completionHandlerCustom(nil, nil, task.error);
+                    strongSelf.completionHandlerCustom(nil, nil, task.error);
                 }
                 return nil;
             }];

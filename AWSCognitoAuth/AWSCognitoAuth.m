@@ -229,16 +229,20 @@ static NSString * AWSCognitoAuthAsfDeviceId = @"asf.device.id";
 - (void)launchUsing:(nullable ASPresentationAnchor) anchor
    uiViewController:(nullable UIViewController *) vc
          completion:(nullable AWSCognitoAuthGetSessionBlock) completion {
-    __block __weak NSOperation *weakGetSessionOperation;
-    NSOperation *getSessionOperation = [NSBlockOperation blockOperationWithBlock:^{
-        self.presentationAnchor = anchor;
-        [self prepareForSignIn:vc completion:completion];
-        if(weakGetSessionOperation.isCancelled){
-            [self dismissSafariViewControllerAndCompleteGetSession:nil error:self.getSessionError];
+    NSOperation *getSessionOperation = [[NSBlockOperation alloc] init];
+    __weak typeof(getSessionOperation) weakGetSessionOperation = getSessionOperation;
+    __weak typeof(self) weakSelf = self;
+    [getSessionOperation addExecutionBlock:^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        strongSelf.presentationAnchor = anchor;
+        [strongSelf prepareForSignIn:vc completion:completion];
+
+        __strong typeof(weakGetSessionOperation) strongGetSessionOperation = weakGetSessionOperation;
+        if (strongGetSessionOperation.isCancelled){
+            [strongSelf dismissSafariViewControllerAndCompleteGetSession:nil error:strongSelf.getSessionError];
         }
-        [self launchSignInVC:vc];
+        [strongSelf launchSignInVC:vc];
     }];
-    weakGetSessionOperation = getSessionOperation;
     [self.getSessionQueue addOperation:getSessionOperation];
 }
 
@@ -264,14 +268,18 @@ static NSString * AWSCognitoAuthAsfDeviceId = @"asf.device.id";
  Adds another getSession operation to the serialized queue of getSession requests
  */
 - (void)enqueueGetSession:(nullable UIViewController *) vc completion: (AWSCognitoAuthGetSessionBlock) completion {
-    __block __weak NSOperation *weakGetSessionOperation;
-    NSOperation *getSessionOperation =  [NSBlockOperation blockOperationWithBlock:^{
-        [self getSessionInternal:vc completion:completion];
-        if(weakGetSessionOperation.isCancelled){
-            [self dismissSafariViewControllerAndCompleteGetSession:nil error:self.getSessionError];
+    NSOperation *getSessionOperation =  [[NSBlockOperation alloc] init];
+    __weak typeof(getSessionOperation) weakGetSessionOperation = getSessionOperation;
+    __weak typeof(self) weakSelf = self;
+    [getSessionOperation addExecutionBlock:^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        [strongSelf getSessionInternal:vc completion:completion];
+
+        __strong typeof(weakGetSessionOperation) strongGetSessionOperation = weakGetSessionOperation;
+        if (strongGetSessionOperation.isCancelled){
+            [strongSelf dismissSafariViewControllerAndCompleteGetSession:nil error:strongSelf.getSessionError];
         }
     }];
-    weakGetSessionOperation = getSessionOperation;
     [self.getSessionQueue addOperation:getSessionOperation];
 }
 
@@ -407,7 +415,7 @@ withPresentingViewController:(UIViewController *)presentingViewController {
     self.svc.modalPresentationStyle = UIModalPresentationPopover;
     self.isProcessingSignIn = YES;
     dispatch_async(dispatch_get_main_queue(), ^{
-        __block UIViewController * sourceVC = presentingViewController;
+        UIViewController * sourceVC = presentingViewController;
         if(!sourceVC){
             if(!self.delegate){
                 [self dismissSafariViewControllerAndCompleteGetSession:nil error:[self getError:@"delegate must be set to a valid AWSCognitoAuthDelegate" code:AWSCognitoAuthClientInvalidAuthenticationDelegate]];
@@ -441,7 +449,7 @@ withPresentingViewController:(UIViewController *)presentingViewController {
     //check to see if we have valid tokens
     NSString * username = [self currentUsername];
     if(username){
-        __block NSString * keyChainNamespace = [self keyChainNamespaceClientId: [self currentUsername]];
+        NSString * keyChainNamespace = [self keyChainNamespaceClientId: [self currentUsername]];
         NSString * expirationDateKey = [self keyChainKey:keyChainNamespace key:AWSCognitoAuthUserTokenExpiration];
         NSString * expirationDate = self.keychain[expirationDateKey];
         NSString * scopesKey = [self keyChainKey:keyChainNamespace key:AWSCognitoAuthUserScopes];
@@ -562,14 +570,17 @@ withPresentingViewController:(UIViewController *)presentingViewController {
 
 - (void)enqueueSignOut:(nullable UIViewController *) vc
             completion: (AWSCognitoAuthSignOutBlock) completion {
-    __block __weak NSOperation *weakSignOutOperation;
-    NSOperation *signOutOperation =  [NSBlockOperation blockOperationWithBlock:^{
-        if(weakSignOutOperation.isCancelled){
-            completion(self.signOutError);
+    NSOperation *signOutOperation =  [[NSBlockOperation alloc] init];
+    __weak typeof(signOutOperation) weakSignOutOperation = signOutOperation;
+    __weak typeof(self) weakSelf = self;
+    [signOutOperation addExecutionBlock:^{
+        __strong typeof(weakSelf) strongSelf = weakSelf;
+        __strong typeof(weakSignOutOperation) strongSignOutOperation = weakSignOutOperation;
+        if (strongSignOutOperation.isCancelled){
+            completion(strongSelf.signOutError);
         }
-        [self signOutInternal:vc completion:completion];
+        [strongSelf signOutInternal:vc completion:completion];
     }];
-    weakSignOutOperation = signOutOperation;
     [self.signOutQueue addOperation:signOutOperation];
 }
 

@@ -217,7 +217,7 @@ static const NSString * AWSCognitoIdentityUserUserAttributePrefix = @"userAttrib
 -(AWSTask<AWSCognitoIdentityUserSession*> *) getSession {
     
     //check to see if we have valid tokens
-    __block NSString * keyChainNamespace = [self keyChainNamespaceClientId];
+    NSString * keyChainNamespace = [self keyChainNamespaceClientId];
     NSString * expirationTokenKey = [self keyChainKey:keyChainNamespace key:AWSCognitoIdentityUserTokenExpiration];
     NSString * expirationDate = self.pool.keychain[expirationTokenKey];
     

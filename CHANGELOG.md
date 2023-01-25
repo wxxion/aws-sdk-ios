@@ -12,6 +12,12 @@ MOVE THIS SECTION TO THE CORRECT LOCATION
 ---AWSEC2
 ---AWSConnect
 
+- **AWSAuthSDK**, **AWSCognitoAuth**
+    - Fix incorrect usage of weak reference
+
+- **AWSCognitoAuth**, **AWSCognitoIdentityProvider**
+    - Remove unnecessary usage of __block
+
 # AWS Mobile SDK for iOS CHANGELOG
 ## Unreleased
 
