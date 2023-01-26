@@ -1,25 +1,33 @@
----
-
-MOVE THIS SECTION TO THE CORRECT LOCATION
-
-### Misc. Updates
-
-- Model updates for the following services
----AWSComprehend
----AWSLambda
----AWSCloudWatchLogs
----AWSLocation
----AWSEC2
----AWSConnect
 
 # AWS Mobile SDK for iOS CHANGELOG
 ## Unreleased
 
+-Features for next release
+
+## 2.30.1
+
 ### Misc. Updates
 
+- **Auth**
+  - Added migration of keychain to the current accessibility level set for different Auth SDK. This will enabled keychain items that are stored in different accessibility level to get fixed to the current accessibility. (See [PR #4516](https://github.com/aws-amplify/aws-sdk-ios/pull/4516))
+
+
+## 2.30.0
+
+### New features
+- **AWSCore**
+  - Support for `ap-southeast-4` - Asia Pacific (Melbourne) (see [AWS Regional Services List](https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/) for a list of services supported in the region)
+
+
+### Misc. Updates
 - Model updates for the following services
-  - AWSCloudWatchLogs
-  - AWSConnect
+  -AWSCloudWatchLogs
+  -AWSConnect
+  -AWSConnectParticipant
+  -AWSComprehend
+  -AWSEC2
+  -AWSLambda
+  -AWSLocation
 
 ### Bug Fixes
 
